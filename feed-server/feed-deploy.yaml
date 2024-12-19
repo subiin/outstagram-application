@@ -15,10 +15,16 @@ spec:
       labels:
         app: feed-server
     spec:
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: spring-app-logs
       containers:
         - name: feed-container
-          # image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_FEED_SERVER_REPO}}:${IMAGE_TAG}
-          image: 975050179689.dkr.ecr.ap-northeast-2.amazonaws.com/outstagram-dev-feed-server:f_0.0.4
+          image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_FEED_SERVER_REPO}}:${IMAGE_TAG}
+          volumeMounts:
+            - name: logs
+              mountPath: /logss
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: dev
@@ -59,3 +65,16 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 1
             failureThreshold: 7
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spring-app-logs
+  namespace: sns
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 5Gi
