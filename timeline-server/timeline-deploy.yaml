@@ -18,9 +18,16 @@ spec:
       labels:
         app: timeline-server
     spec:
+      volumes:
+        - name: spring-app-logs
+          persistentVolumeClaim:
+            claimName: spring-app-logs
       containers:
         - name: timeline
           image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_TIMELINE_SERVER_REPO}}:${IMAGE_TAG}
+          volumeMounts:
+            - name: spring-app-logs
+              mountPath: /logs
           imagePullPolicy: Always
           env:
             - name: SPRING_PROFILES_ACTIVE
