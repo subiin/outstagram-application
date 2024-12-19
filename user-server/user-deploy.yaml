@@ -15,10 +15,16 @@ spec:
       labels:
         app: user-server
     spec:
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: spring-app-logs
       containers:
         - name: user-container
-          # image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_USER_SERVER_REPO}}:${IMAGE_TAG}
-          image: 975050179689.dkr.ecr.ap-northeast-2.amazonaws.com/outstagram-dev-user-server:u_0.0.3
+          image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_USER_SERVER_REPO}}:${IMAGE_TAG}
+          volumeMounts:
+            - name: logs
+              mountPath: /logs
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: dev
