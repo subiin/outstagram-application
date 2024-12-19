@@ -22,12 +22,17 @@ spec:
         - name: image-volume
           persistentVolumeClaim:
             claimName: image-volume-claim
+        - name: spring-app-logs
+          persistentVolumeClaim:
+            claimName: spring-app-logs
       containers:
         - name: image
           image: {{AWS_ACCOUNT_ID}}.dkr.ecr.{{AWS_REGION}}.amazonaws.com/{{ECR_IMAGE_SERVER_REPO}}:${IMAGE_TAG}
           volumeMounts:
             - name: image-volume
               mountPath: /images
+            - name: spring-app-logs
+              mountPath: /logs
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: dev
